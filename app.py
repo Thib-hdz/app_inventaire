@@ -250,7 +250,7 @@ for index, (_, row) in enumerate(df_filtre.iterrows()):
                     if nom.startswith(objet):
 
                         image_paths.append(
-                            os.path.join("photos", fichier)
+                            os.path.join("Photos", fichier)
                         )
 
                 image_paths.sort()
