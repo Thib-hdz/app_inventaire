@@ -303,7 +303,7 @@ for index, (_, row) in enumerate(df_filtre.iterrows()):
                 )
            
             if st.button(
-                "🛒",
+                "Ajouter 🛒",
                 key=f"cart_{index}",
                 help="Ajouter au panier"
             ):
