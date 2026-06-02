@@ -151,7 +151,7 @@ def show_gallery(image_paths, objet):
 @st.cache_data
 def get_all_photos():
 
-    return os.listdir("photos")
+    return os.listdir("Photos")
 
 st.set_page_config(
     page_title="Inventaire Clara & Thib",
