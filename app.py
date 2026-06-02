@@ -73,7 +73,11 @@ def show_cart():
         return
     total = 0
     for item in panier:
-        prix = float(item["prix"])
+        if item["prix"] == '-':
+            prix = 0
+        else:
+            prix = float(item["prix"])
+        total += prix
         total += prix
         with st.container(border=True):
 
