@@ -57,8 +57,31 @@ TOTAL : {total:.2f} €
     serveur.send_message(msg)
     serveur.quit()
 
+@st.dialog("👋 Bienvenue")
+def show_welcome():
 
+    st.markdown("""
+    ## 📦 Inventaire Clara & Thibaut
 
+    Cette application vous permet de :
+
+    - 🔍 Rechercher un objet par nom
+    - 🏷️ Filtrer par catégorie
+    - 🖼️ Consulter toutes les photos d'un objet
+    - 🛒 Ajouter des objets au panier
+    - 💰 Depuis le panier, voir le montant total sélectionné
+    - 📧 Envoyer une demande avec votre sélection
+
+    On vous fera un retour directement 
+
+    Bonne visite !
+    """)
+
+if "welcome_shown" not in st.session_state:
+    st.session_state.welcome_shown = False
+
+if not st.session_state.welcome_shown:
+    show_welcome()
 
 if "panier" not in st.session_state:
     st.session_state.panier = []
@@ -73,7 +96,11 @@ def show_cart():
         return
     total = 0
     for item in panier:
-        prix = float(item["prix"])
+        if item["prix"] == '-':
+            prix = 0
+        else:
+            prix = float(item["prix"])
+        total += prix
         total += prix
         with st.container(border=True):
 
@@ -151,7 +178,7 @@ def show_gallery(image_paths, objet):
 @st.cache_data
 def get_all_photos():
 
-    return os.listdir("photos")
+    return os.listdir("Photos")
 
 st.set_page_config(
     page_title="Inventaire Clara & Thib",
@@ -161,6 +188,9 @@ st.set_page_config(
 st.title("📦 Inventaire Clara et Thibaut")
 top1, top2 = st.columns([10, 1])
 
+with top1:
+    if st.button("❓"):
+        show_welcome()
 with top2:
 
     if st.button(
@@ -190,9 +220,9 @@ categories = ["Toutes"] + sorted(df["Catégorie"].dropna().unique().tolist())
 categorie_selection = st.sidebar.selectbox(
     "Catégorie",categories
 )
-
-dispo_selection = st.sidebar.selectbox(
-    "Disponibilité",["Toutes", "Réservé", "Dispo"]
+Objects = ["Tous"] + sorted(df["Objet"].dropna().unique().tolist())
+objects_selection = st.sidebar.selectbox(
+    "Objets",Objects
 )
 recherche = st.sidebar.text_input(
     "Rechercher un objet"
@@ -204,10 +234,10 @@ df_filtre["Dispo"] = df_filtre["Dispo"].fillna("Dispo")
 
 if categorie_selection != "Toutes":
     df_filtre = df_filtre[df_filtre["Catégorie"] == categorie_selection]
-if dispo_selection != "Toutes":
-    df_filtre = df_filtre[df_filtre["Dispo"] == dispo_selection]
 if recherche:
     df_filtre = df_filtre[df_filtre["Objet"].str.contains(recherche, case=False, na=False)]
+if objects_selection != "Tous":
+    df_filtre = df_filtre[df_filtre["Objet"] == objects_selection]
 
 df_filtre = df_filtre[df_filtre["Dispo"] != 'Réservé']
 
@@ -250,7 +280,7 @@ for index, (_, row) in enumerate(df_filtre.iterrows()):
                     if nom.startswith(objet):
 
                         image_paths.append(
-                            os.path.join("photos", fichier)
+                            os.path.join("Photos", fichier)
                         )
 
                 image_paths.sort()
@@ -299,7 +329,7 @@ for index, (_, row) in enumerate(df_filtre.iterrows()):
                 )
            
             if st.button(
-                "🛒",
+                "Ajouter 🛒",
                 key=f"cart_{index}",
                 help="Ajouter au panier"
             ):
@@ -324,4 +354,3 @@ for index, (_, row) in enumerate(df_filtre.iterrows()):
                         f"{row['Objet']} ajouté au panier"
                     )
         st.divider()
-
