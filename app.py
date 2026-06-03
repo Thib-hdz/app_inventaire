@@ -76,12 +76,9 @@ def show_welcome():
 
     Bonne visite !
     """)
-
-if "welcome_shown" not in st.session_state:
-    st.session_state.welcome_shown = False
-
-if not st.session_state.welcome_shown:
-    show_welcome()
+    if st.button("Commencer"):
+        st.session_state.welcome_shown = True
+        st.rerun()
 
 if "panier" not in st.session_state:
     st.session_state.panier = []
@@ -100,7 +97,6 @@ def show_cart():
             prix = 0
         else:
             prix = float(item["prix"])
-        total += prix
         total += prix
         with st.container(border=True):
 
@@ -184,6 +180,11 @@ st.set_page_config(
     page_title="Inventaire Clara & Thib",
     layout="wide"
 )
+if "welcome_shown" not in st.session_state:
+    st.session_state.welcome_shown = False
+
+if not st.session_state.welcome_shown:
+    show_welcome()
 
 st.title("📦 Inventaire Clara et Thibaut")
 top1, top2 = st.columns([10, 1])
