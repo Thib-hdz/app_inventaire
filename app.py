@@ -277,9 +277,7 @@ for index, (_, row) in enumerate(df_filtre.iterrows()):
                 for fichier in all_photos:
 
                     nom = os.path.splitext(fichier)[0].lower()
-
                     if nom.startswith(objet):
-
                         image_paths.append(
                             os.path.join("Photos", fichier)
                         )
@@ -310,7 +308,7 @@ for index, (_, row) in enumerate(df_filtre.iterrows()):
                     f"""
                     <div style="height:450px; overflow:hidden;">
                     
-                    <h4>{row['Objet']}</h4>
+                    <h4>{row['Nom']}</h4>
 
                     <p><b>Description :</b> {row['Description']}</p>
 
